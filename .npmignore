@@ -1,0 +1,10 @@
+/.idea
+/.yarn
+/node_modules
+/src
+/test
+
+.gitignore
+.prettierrc
+tsconfig.json
+*.iml
