@@ -1,4 +1,4 @@
-# vite-plugin-handlebars-import
+# @yoichiro/vite-plugin-handlebars
 
 This is a plugin that provides convenient features for using Handlebars with Vite.
 
@@ -46,7 +46,7 @@ This plugin automatically loads the `footer.hbs` file and includes it in the `ca
 # Installation
 
 ```shell
-npm install vite-plugin-handlebars-import --save-dev
+npm install @yoichiro/vite-plugin-handlebars --save-dev
 ```
 
 # Usage
@@ -56,11 +56,11 @@ To use this plugin in your Vite project, modify your `vite.config.js` or `vite.c
 ```javascript
 // vite.config.js
 import { defineConfig } from 'vite';
-import handlebarsImportPlugin from 'vite-plugin-handlebars-import';
+import handlebarsPlugin from '@yoichiro/vite-plugin-handlebars';
 
 export default defineConfig({
   plugins: [
-    handlebarsImportPlugin()
+    handlebarsPlugin()
   ]
 });
 ```
@@ -72,17 +72,17 @@ This plugin can be configured with the following options:
 * `templateFileExtension` (string) - Specifies the extension of Handlebars template files. Defaults to `hbs` if omitted.
 * `partialDirectoryPath` (string) - Specifies the path to the directory containing partial template files to be included in Handlebars template files. If omitted, partial template files are not registered.
 
-These options can be specified as arguments to the `handlebarsImportPlugin` function. Below is an example that specifies `handlebars` as the template file extension and `templates/partials` as the directory containing partial template files.
+These options can be specified as arguments to the `handlebarsPlugin` function. Below is an example that specifies `handlebars` as the template file extension and `templates/partials` as the directory containing partial template files.
 
 ```javascript
 // vite.config.js
 import { defineConfig } from 'vite';
-import handlebarsImportPlugin from 'vite-plugin-handlebars-import';
+import handlebarsPlugin from '@yoichiro/vite-plugin-handlebars';
 import path from 'path';
 
 export default defineConfig({
   plugins: [
-    handlebarsImportPlugin({
+    handlebarsPlugin({
       templateFileExtension: 'handlebars',
       partialDirectoryPath: path.resolve(__dirname, 'templates', 'partials')
     })
@@ -90,12 +90,25 @@ export default defineConfig({
 });
 ```
 
+# Samples
+
+The `integration` directory contains a sample Vite project using this plugin. You can start this sample project by following these steps:
+
+```sh
+$ git clone https://github.com/yoichiro/vite-plugin-handlebars.git
+$ cd vite-plugin-handlebars
+$ npm install
+$ npm run integration-test
+```
+
+After the development server starts, please access `http://localhost:5173` in your web browser.
+
 # Contributing
 
 If you would like to contribute to this plugin, please follow these steps:
 
 1. Register an issue and describe what you would like to contribute.
-2. Fork this repository, create a new branch, make your code changes, and submit a pull request.
+2. When you want to contribute by sending code, fork this repository, create a new branch, make your code changes, and submit a pull request.
 
 # License
 

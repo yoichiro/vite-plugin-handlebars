@@ -6,13 +6,13 @@ import {
   transform,
 } from './internal';
 
-export type HandlebarsImportPluginOptions = {
+export type HandlebarsPluginOptions = {
   templateFileExtension?: string;
   partialsDirectoryPath?: string;
 };
 
-export default function handlebarsImportPlugin(
-  options: HandlebarsImportPluginOptions = {}
+export default function handlebarsPlugin(
+  options: HandlebarsPluginOptions = {}
 ): Plugin {
   const templateFileExtension = decideTemplateFileExtension(
     options.templateFileExtension
@@ -22,7 +22,7 @@ export default function handlebarsImportPlugin(
     options.partialsDirectoryPath
   );
   return {
-    name: 'vite-plugin-handlebars-import',
+    name: '@yoichiro/vite-plugin-handlebars',
     transform(code, id) {
       if (!id.endsWith(templateFileExtension)) {
         return null;

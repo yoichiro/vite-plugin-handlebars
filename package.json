@@ -1,15 +1,15 @@
 {
-  "name": "vite-plugin-handlebars-import",
-  "version": "1.0.1",
+  "name": "@yoichiro/vite-plugin-handlebars",
+  "version": "1.0.2",
   "author": {
     "name": "Yoichiro Tanaka",
     "email": "yoichiro6642@gmail.com",
     "url": "https://github.com/yoichiro"
   },
-  "repository": "github:yoichiro/vite-plugin-handlebars-import",
-  "homepage": "https://github.com/yoichiro/vite-plugin-handlebars-import",
+  "repository": "github:yoichiro/vite-plugin-handlebars",
+  "homepage": "https://github.com/yoichiro/vite-plugin-handlebars",
   "bugs": {
-    "url": "https://github.com/yoichiro/vite-plugin-handlebars-import/issues"
+    "url": "https://github.com/yoichiro/vite-plugin-handlebars/issues"
   },
   "dependencies": {
     "handlebars": "^4.7.8",
