@@ -1,6 +1,9 @@
 import path from 'path';
 import Handlebars from 'handlebars';
 import fs from 'fs';
+import { ViteDevServer } from 'vite';
+
+let cachePartialMap: { [p: string]: string } | undefined = undefined;
 
 export const decideTemplateFileExtension = (
   templateFileExtension?: string
@@ -31,11 +34,30 @@ export const createPartialMap = (
   );
 };
 
+const getPartialMap = (
+  templateFileExtension: string,
+  partialsDirectoryPath: string | undefined
+): { [p: string]: string } => {
+  return (
+    cachePartialMap ??
+    createPartialMap(templateFileExtension, partialsDirectoryPath)
+  );
+};
+
+const resetPartialMap = (): void => {
+  cachePartialMap = undefined;
+};
+
 export const transform = (
   code: string,
-  id: string,
-  partialMap: { [p: string]: string }
+  _id: string,
+  templateFileExtension: string,
+  partialsDirectoryPath: string | undefined
 ): string => {
+  const partialMap = getPartialMap(
+    templateFileExtension,
+    partialsDirectoryPath
+  );
   const precompiled = Handlebars.precompile(code);
   return `
 import Handlebars from 'handlebars/runtime';
@@ -103,4 +125,13 @@ export const getAllHandlebarsFiles = (
     }
   });
   return arrayOfFiles.sort();
+};
+
+export const handleHotUpdate = (file: string, server: ViteDevServer): void => {
+  resetPartialMap();
+  server.moduleGraph.invalidateAll();
+  server.ws.send({
+    type: 'full-reload',
+    path: '*',
+  });
 };
