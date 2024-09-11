@@ -107,7 +107,6 @@ describe('createPartialMap', () => {
   });
 
   test('should return empty map because directory path not specified', () => {
-    const partialDirectoryPath = path.resolve(__dirname, 'assets');
     const actual = createPartialMap('.hbs', undefined);
     expect(Object.keys(actual).length).toEqual(0);
   });

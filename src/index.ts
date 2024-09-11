@@ -1,8 +1,7 @@
 import { Plugin } from 'vite';
-import Handlebars from 'handlebars';
 import {
-  createPartialMap,
   decideTemplateFileExtension,
+  handleHotUpdate,
   transform,
 } from './internal';
 
@@ -17,22 +16,31 @@ export default function handlebarsPlugin(
   const templateFileExtension = decideTemplateFileExtension(
     options.templateFileExtension
   );
-  const partialMap = createPartialMap(
-    templateFileExtension,
-    options.partialsDirectoryPath
-  );
   return {
     name: '@yoichiro/vite-plugin-handlebars',
     transform(code, id) {
       if (!id.endsWith(templateFileExtension)) {
         return null;
       }
-      const precompiled = Handlebars.precompile(code);
-      const transformed = transform(code, id, partialMap);
+      const transformed = transform(
+        code,
+        id,
+        templateFileExtension,
+        options.partialsDirectoryPath
+      );
       return {
         code: transformed,
         map: null,
       };
+    },
+    handleHotUpdate({ file, server }) {
+      if (options.partialsDirectoryPath === undefined) {
+        return;
+      }
+      if (!file.startsWith(options.partialsDirectoryPath)) {
+        return;
+      }
+      handleHotUpdate(file, server);
     },
   };
 }
