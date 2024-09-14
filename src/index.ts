@@ -3,7 +3,7 @@ import {
   decideTemplateFileExtension,
   handleHotUpdate,
   transform,
-} from './internal';
+} from './internal.js';
 
 export type HandlebarsPluginOptions = {
   templateFileExtension?: string;
