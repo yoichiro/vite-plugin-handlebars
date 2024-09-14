@@ -1,6 +1,6 @@
 {
   "name": "@yoichiro/vite-plugin-handlebars",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "author": {
     "name": "Yoichiro Tanaka",
     "email": "yoichiro6642@gmail.com",
@@ -36,7 +36,8 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/index.js"
+    ".": "./dist/index.js",
+    "./internal": "./dist/internal.js"
   },
   "type": "module",
   "keywords": [
