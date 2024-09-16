@@ -5,9 +5,23 @@ import {
   transform,
 } from './internal.js';
 
+export type CompileOptions = {
+  data?: boolean;
+  compat?: boolean;
+  knownHelpers?: { [p: string]: boolean };
+  knownHelpersOnly?: boolean;
+  noEscape?: boolean;
+  strict?: boolean;
+  assumeObjects?: boolean;
+  preventIndent?: boolean;
+  ignoreStandalone?: boolean;
+  explicitPartialContext?: boolean;
+};
+
 export type HandlebarsPluginOptions = {
   templateFileExtension?: string;
   partialsDirectoryPath?: string;
+  compileOptions?: CompileOptions;
 };
 
 export default function handlebarsPlugin(
@@ -26,7 +40,8 @@ export default function handlebarsPlugin(
         code,
         id,
         templateFileExtension,
-        options.partialsDirectoryPath
+        options.partialsDirectoryPath,
+        options.compileOptions
       );
       return {
         code: transformed,

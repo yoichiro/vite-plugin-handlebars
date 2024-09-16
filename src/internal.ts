@@ -17,7 +17,8 @@ export const decideTemplateFileExtension = (
 
 export const createPartialMap = (
   templateFileExtension: string,
-  partialsDirectoryPath?: string
+  partialsDirectoryPath: string | undefined,
+  compileOptions: CompileOptions | undefined
 ): { [p: string]: string } => {
   if (partialsDirectoryPath === undefined) {
     return {};
@@ -30,17 +31,23 @@ export const createPartialMap = (
   return loadAndCompileFiles(
     templateFileExtension,
     partialsPath,
-    partialsFiles
+    partialsFiles,
+    compileOptions
   );
 };
 
 const getPartialMap = (
   templateFileExtension: string,
-  partialsDirectoryPath: string | undefined
+  partialsDirectoryPath: string | undefined,
+  compileOptions: CompileOptions | undefined
 ): { [p: string]: string } => {
   return (
     cachePartialMap ??
-    createPartialMap(templateFileExtension, partialsDirectoryPath)
+    createPartialMap(
+      templateFileExtension,
+      partialsDirectoryPath,
+      compileOptions
+    )
   );
 };
 
@@ -52,13 +59,15 @@ export const transform = (
   code: string,
   _id: string,
   templateFileExtension: string,
-  partialsDirectoryPath: string | undefined
+  partialsDirectoryPath: string | undefined,
+  compileOptions: CompileOptions | undefined
 ): string => {
   const partialMap = getPartialMap(
     templateFileExtension,
-    partialsDirectoryPath
+    partialsDirectoryPath,
+    compileOptions
   );
-  const precompiled = Handlebars.precompile(code);
+  const precompiled = Handlebars.precompile(code, compileOptions ?? {});
   return `
 import Handlebars from 'handlebars/runtime';
 
@@ -71,14 +80,21 @@ ${Object.entries(partialMap)
 export default Handlebars.template(${precompiled});`;
 };
 
-export const loadAndCompileFile = (filePath: string): string => {
-  return Handlebars.precompile(fs.readFileSync(filePath, 'utf-8')).toString();
+export const loadAndCompileFile = (
+  filePath: string,
+  compileOptions: CompileOptions | undefined
+): string => {
+  return Handlebars.precompile(
+    fs.readFileSync(filePath, 'utf-8'),
+    compileOptions ?? {}
+  ).toString();
 };
 
 export const loadAndCompileFiles = (
   templateFileExtension: string,
   baseDirectoryPath: string,
-  filePaths: string[]
+  filePaths: string[],
+  compileOptions: CompileOptions | undefined
 ): { [p: string]: string } => {
   return filePaths.reduce(
     (partialMap, file: string) => {
@@ -87,7 +103,7 @@ export const loadAndCompileFiles = (
         baseDirectoryPath,
         file
       );
-      partialMap[partialName] = loadAndCompileFile(file);
+      partialMap[partialName] = loadAndCompileFile(file, compileOptions);
       return partialMap;
     },
     {} as { [p: string]: string }
