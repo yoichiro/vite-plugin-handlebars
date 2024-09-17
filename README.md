@@ -71,6 +71,7 @@ This plugin can be configured with the following options:
 
 * `templateFileExtension` (string) - Specifies the extension of Handlebars template files. Defaults to `hbs` if omitted.
 * `partialDirectoryPath` (string) - Specifies the path to the directory containing partial template files to be included in Handlebars template files. If omitted, partial template files are not registered.
+* `compileOptions` (object) - Specifies the options to be passed to the Handlebars compiler. If omitted, the default options are used.
 
 These options can be specified as arguments to the `handlebarsPlugin` function. Below is an example that specifies `handlebars` as the template file extension and `templates/partials` as the directory containing partial template files.
 
@@ -89,6 +90,8 @@ export default defineConfig({
   ]
 });
 ```
+
+The `compileOptions` are the various options applied when compiling template files in Handlebars. For details on each option, please refer to the [Handlebars documentation](https://handlebarsjs.com/api-reference/compilation.html#handlebars-compile-template-options).
 
 # Samples
 
