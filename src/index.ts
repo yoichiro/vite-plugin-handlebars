@@ -60,6 +60,13 @@ export type HandlebarsPluginOptions = {
    * If omitted, the plugin does not load and compile partial Handlebars files.
    */
   partialsDirectoryPath?: string;
+  /**
+   * Set to true to optimize the partial registration.
+   * This option is effective only when `partialsDirectoryPath` is set.
+   * If omitted, the plugin does not optimize the partial registration.
+   * If true, the plugin does not register the partials that are already registered.
+   */
+  optimizePartialRegistration?: boolean;
   /** The compile options for the Handlebars compiler. */
   compileOptions?: CompileOptions;
 };
@@ -86,7 +93,8 @@ export default function handlebarsPlugin(
         id,
         templateFileExtension,
         options.partialsDirectoryPath,
-        options.compileOptions
+        options.compileOptions,
+        options.optimizePartialRegistration
       );
       return {
         code: transformed,
