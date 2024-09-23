@@ -60,7 +60,8 @@ export const transform = (
   _id: string,
   templateFileExtension: string,
   partialsDirectoryPath: string | undefined,
-  compileOptions: CompileOptions | undefined
+  compileOptions: CompileOptions | undefined,
+  optimizePartialRegistration: boolean | undefined
 ): string => {
   const partialMap = getPartialMap(
     templateFileExtension,
@@ -72,9 +73,12 @@ export const transform = (
 import Handlebars from 'handlebars/runtime';
 
 ${Object.entries(partialMap)
-  .map(
-    ([name, content]) =>
-      `Handlebars.registerPartial('${name}', Handlebars.template(${content}));`
+  .map(([name, content]) =>
+    optimizePartialRegistration
+      ? `if (Handlebars.partials['${name}'] === undefined) {
+  Handlebars.registerPartial('${name}', Handlebars.template(${content}));
+}`
+      : `Handlebars.registerPartial('${name}', Handlebars.template(${content}));`
   )
   .join('\n')}
 export default Handlebars.template(${precompiled});`;

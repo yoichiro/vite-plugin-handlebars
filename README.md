@@ -71,6 +71,7 @@ This plugin can be configured with the following options:
 
 * `templateFileExtension` (string) - Specifies the extension of Handlebars template files. Defaults to `hbs` if omitted.
 * `partialDirectoryPath` (string) - Specifies the path to the directory containing partial template files to be included in Handlebars template files. If omitted, partial template files are not registered.
+* `optimizePartialRegistration` (boolean) - Set to true to optimize the partial registration. This option is effective only when `partialsDirectoryPath` is set. If omitted, the plugin does not optimize the partial registration. If true, the plugin does not register the partials that are already registered.
 * `compileOptions` (object) - Specifies the options to be passed to the Handlebars compiler. If omitted, the default options are used.
 
 These options can be specified as arguments to the `handlebarsPlugin` function. Below is an example that specifies `handlebars` as the template file extension and `templates/partials` as the directory containing partial template files.
@@ -85,7 +86,8 @@ export default defineConfig({
   plugins: [
     handlebarsPlugin({
       templateFileExtension: 'handlebars',
-      partialDirectoryPath: path.resolve(__dirname, 'templates', 'partials')
+      partialDirectoryPath: path.resolve(__dirname, 'templates', 'partials'),
+      optimizePartialRegistration: true,
     })
   ]
 });

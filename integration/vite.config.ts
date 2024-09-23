@@ -8,6 +8,7 @@ export default defineConfig({
     handlebarsPlugin({
       templateFileExtension: '.handlebars',
       partialsDirectoryPath: resolve(__dirname, 'partials'),
+      optimizePartialRegistration: true,
     }),
   ],
 });
