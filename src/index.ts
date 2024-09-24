@@ -1,9 +1,11 @@
-import { Plugin } from 'vite';
+import { IndexHtmlTransformContext, Plugin } from 'vite';
 import {
   decideTemplateFileExtension,
   handleHotUpdate,
   transform,
+  transformIndexHtml,
 } from './internal.js';
+import { HelperDeclareSpec } from 'handlebars';
 
 /** This plugin supports a variety of options to customize the behavior of the Handlebars compiler. */
 export type CompileOptions = {
@@ -50,6 +52,23 @@ export type CompileOptions = {
   explicitPartialContext?: boolean;
 };
 
+/**
+ * The Handlebars context for the index file transformation.
+ * The context can be a plain object or a function that returns a plain object.
+ * If the context is a function, it can also be an async function.
+ */
+export type HandlebarsContext =
+  | Record<string, unknown>
+  | (() => Record<string, unknown> | Promise<Record<string, unknown>>);
+
+/** The option for the index file transformation. */
+export type TransformIndexHtmlOptions = {
+  /** The Handlebars context for the index file transformation. */
+  context?: HandlebarsContext;
+  /** The Handlebars helpers for the index file transformation. */
+  helpers?: HelperDeclareSpec;
+};
+
 /** The options for the Handlebars plugin. */
 export type HandlebarsPluginOptions = {
   /** The file extension of the Handlebars template files. Default is '.hbs'. */
@@ -69,6 +88,11 @@ export type HandlebarsPluginOptions = {
   optimizePartialRegistration?: boolean;
   /** The compile options for the Handlebars compiler. */
   compileOptions?: CompileOptions;
+  /**
+   * The option for the index file transformation.
+   * If omitted, the plugin does not transform the index file.
+   */
+  transformIndexHtmlOptions?: TransformIndexHtmlOptions | undefined;
 };
 
 /**
@@ -109,6 +133,22 @@ export default function handlebarsPlugin(
         return;
       }
       handleHotUpdate(file, server);
+    },
+    transformIndexHtml: {
+      order: 'pre',
+      handler(html: string, context: IndexHtmlTransformContext) {
+        if (options.transformIndexHtmlOptions === undefined) {
+          return html;
+        }
+        return transformIndexHtml(
+          html,
+          context,
+          templateFileExtension,
+          options.partialsDirectoryPath,
+          options.compileOptions,
+          options.transformIndexHtmlOptions
+        );
+      },
     },
   };
 }

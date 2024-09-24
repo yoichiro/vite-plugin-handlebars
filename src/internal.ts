@@ -1,7 +1,8 @@
 import path from 'path';
 import Handlebars from 'handlebars';
 import fs from 'fs';
-import { ViteDevServer } from 'vite';
+import { IndexHtmlTransformContext, ViteDevServer } from 'vite';
+import { HandlebarsContext, TransformIndexHtmlOptions } from './index';
 
 let cachePartialMap: { [p: string]: string } | undefined = undefined;
 
@@ -154,4 +155,51 @@ export const handleHotUpdate = (file: string, server: ViteDevServer): void => {
     type: 'full-reload',
     path: '*',
   });
+};
+
+const createContextMap = async (
+  context: HandlebarsContext | undefined
+): Promise<{ [p: string]: unknown }> => {
+  if (context === undefined) {
+    return {};
+  }
+  if (typeof context === 'function') {
+    return context();
+  }
+  return context;
+};
+
+export const transformIndexHtml = async (
+  html: string,
+  _context: IndexHtmlTransformContext,
+  templateFileExtension: string,
+  partialsDirectoryPath: string | undefined,
+  compileOptions: CompileOptions | undefined,
+  transformIndexHtmlOptions: TransformIndexHtmlOptions
+): Promise<string> => {
+  const partialMap = getPartialMap(
+    templateFileExtension,
+    partialsDirectoryPath,
+    compileOptions
+  );
+  Object.entries(partialMap).forEach(([name, content]) => {
+    if (Handlebars.partials[name] !== undefined) {
+      return;
+    }
+    const pre = new Function('return ' + content.toString())();
+    Handlebars.registerPartial(name, Handlebars.template(pre));
+  });
+  if (transformIndexHtmlOptions.helpers !== undefined) {
+    Object.entries(transformIndexHtmlOptions.helpers).forEach(
+      ([name, helper]) => {
+        if (Handlebars.helpers[name] !== undefined) {
+          return;
+        }
+        Handlebars.registerHelper(name, helper);
+      }
+    );
+  }
+  const template = Handlebars.compile(html, compileOptions ?? {});
+  const contextMap = await createContextMap(transformIndexHtmlOptions.context);
+  return template(contextMap);
 };

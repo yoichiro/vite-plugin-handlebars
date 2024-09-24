@@ -9,6 +9,14 @@ export default defineConfig({
       templateFileExtension: '.handlebars',
       partialsDirectoryPath: resolve(__dirname, 'partials'),
       optimizePartialRegistration: true,
+      transformIndexHtmlOptions: {
+        context: async () => {
+          return Promise.resolve({ keyword: 'static' });
+        },
+        helpers: {
+          'upper-case': (str: string) => str.toUpperCase(),
+        },
+      },
     }),
   ],
 });
