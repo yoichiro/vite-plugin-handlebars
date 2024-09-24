@@ -19,7 +19,7 @@ export const createPartialMap = (
   templateFileExtension: string,
   partialsDirectoryPath: string | undefined,
   compileOptions: CompileOptions | undefined
-): { [p: string]: string } => {
+): { [p: string]: TemplateSpecification } => {
   if (partialsDirectoryPath === undefined) {
     return {};
   }
@@ -40,7 +40,7 @@ const getPartialMap = (
   templateFileExtension: string,
   partialsDirectoryPath: string | undefined,
   compileOptions: CompileOptions | undefined
-): { [p: string]: string } => {
+): { [p: string]: TemplateSpecification } => {
   return (
     cachePartialMap ??
     createPartialMap(
@@ -76,22 +76,22 @@ ${Object.entries(partialMap)
   .map(([name, content]) =>
     optimizePartialRegistration
       ? `if (Handlebars.partials['${name}'] === undefined) {
-  Handlebars.registerPartial('${name}', Handlebars.template(${content}));
+  Handlebars.registerPartial('${name}', Handlebars.template(${content.toString()}));
 }`
-      : `Handlebars.registerPartial('${name}', Handlebars.template(${content}));`
+      : `Handlebars.registerPartial('${name}', Handlebars.template(${content.toString()}));`
   )
   .join('\n')}
-export default Handlebars.template(${precompiled});`;
+export default Handlebars.template(${precompiled.toString()});`;
 };
 
 export const loadAndCompileFile = (
   filePath: string,
   compileOptions: CompileOptions | undefined
-): string => {
+): TemplateSpecification => {
   return Handlebars.precompile(
     fs.readFileSync(filePath, 'utf-8'),
     compileOptions ?? {}
-  ).toString();
+  );
 };
 
 export const loadAndCompileFiles = (
@@ -99,7 +99,7 @@ export const loadAndCompileFiles = (
   baseDirectoryPath: string,
   filePaths: string[],
   compileOptions: CompileOptions | undefined
-): { [p: string]: string } => {
+): { [p: string]: TemplateSpecification } => {
   return filePaths.reduce(
     (partialMap, file: string) => {
       const partialName = convertFilePathToPartialName(
@@ -110,7 +110,7 @@ export const loadAndCompileFiles = (
       partialMap[partialName] = loadAndCompileFile(file, compileOptions);
       return partialMap;
     },
-    {} as { [p: string]: string }
+    {} as { [p: string]: TemplateSpecification }
   );
 };
 
