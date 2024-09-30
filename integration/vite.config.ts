@@ -19,4 +19,12 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        index: resolve(__dirname, 'index.html'),
+        alternative: resolve(__dirname, 'alternative.html'),
+      },
+    },
+  },
 });

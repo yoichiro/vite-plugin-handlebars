@@ -103,7 +103,7 @@ The `integration` directory contains a sample Vite project using this plugin. Yo
 $ git clone https://github.com/yoichiro/vite-plugin-handlebars.git
 $ cd vite-plugin-handlebars
 $ npm install
-$ npm run integration-test
+$ npm run integration-preview
 ```
 
 After the development server starts, please access `http://localhost:5173` in your web browser.

@@ -29,7 +29,9 @@
     "build": "tsc",
     "prepare": "npm run build",
     "test": "vitest",
-    "integration-test": "npm run build && vite --config integration/vite.config.ts"
+    "integration-dev": "npm run build && vite --config integration/vite.config.ts",
+    "integration-build": "npm run build && vite build --config integration/vite.config.ts",
+    "integration-preview": "npm run build && vite preview --config integration/vite.config.ts"
   },
   "types": "dist/index.d.ts",
   "license": "MIT",
